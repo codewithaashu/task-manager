@@ -1,5 +1,6 @@
 package com.codewithaashu.task_manager.Payload;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.codewithaashu.task_manager.enums.Priority;
@@ -14,6 +15,7 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskDto {
+    private Long id;
     @NotNull(message = "title is required field")
     private String title;
     private String date;
@@ -21,7 +23,7 @@ public class TaskDto {
     private Priority priority;
     @Enumerated(EnumType.STRING)
     private Stage stage;
-    private List<ActivitiesDto> activites;
+    private List<ActivitiesDto> activites = new ArrayList<>();
     private List<SubTaskDto> subTasks;
     private List<String> assets;
     private Boolean isTrashed;

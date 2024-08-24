@@ -2,13 +2,14 @@ package com.codewithaashu.task_manager.service;
 
 import java.util.List;
 
+import com.codewithaashu.task_manager.Entity.User;
 import com.codewithaashu.task_manager.Payload.ActivitiesDto;
 import com.codewithaashu.task_manager.Payload.SubTaskDto;
 import com.codewithaashu.task_manager.Payload.TaskDto;
 import com.codewithaashu.task_manager.enums.Stage;
 
 public interface TaskService {
-    TaskDto createTask(TaskDto taskDto);
+    TaskDto createTask(TaskDto taskDto, User logginUser);
 
     TaskDto getTask(Long id);
 

@@ -16,6 +16,7 @@ import com.codewithaashu.task_manager.Entity.User;
 import com.codewithaashu.task_manager.Payload.ActivitiesDto;
 import com.codewithaashu.task_manager.Payload.SubTaskDto;
 import com.codewithaashu.task_manager.Payload.TaskDto;
+import com.codewithaashu.task_manager.enums.ActivityType;
 import com.codewithaashu.task_manager.enums.Stage;
 import com.codewithaashu.task_manager.exceptions.ResourceNotFoundException;
 import com.codewithaashu.task_manager.repository.ActivitiesRepository;
@@ -46,14 +47,12 @@ public class TaskServiceImpl implements TaskService {
     private NotificationRepository notificationRepository;
 
     @Override
-    public TaskDto createTask(TaskDto taskDto) {
+    public TaskDto createTask(TaskDto taskDto, User logginUser) {
         // create task
         // change in entity form
         Task task = modelMapper.map(taskDto, Task.class);
         // save in db
         Task savedTask = taskRepository.save(task);
-        // change in return form
-        TaskDto saveTaskDto = modelMapper.map(savedTask, TaskDto.class);
 
         // create notfication
         Notification notification = new Notification();
@@ -79,6 +78,18 @@ public class TaskServiceImpl implements TaskService {
         // save it
         notificationRepository.save(notification);
 
+        // create activities
+        Activites activites = new Activites();
+        activites.setType(ActivityType.assigned);
+        activites.setActivity(notifcationText);
+        activites.setBy(logginUser);
+        activites.setTask(savedTask);
+        // save activity
+        Activites savedActivites = activitiesRepository.save(activites);
+        // save in task
+        savedTask.getActivites().add(savedActivites);
+        // change in return form
+        TaskDto saveTaskDto = modelMapper.map(savedTask, TaskDto.class);
         return saveTaskDto;
     }
 

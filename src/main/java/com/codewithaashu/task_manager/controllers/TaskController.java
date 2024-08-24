@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.codewithaashu.task_manager.Entity.User;
 import com.codewithaashu.task_manager.Payload.ActivitiesDto;
 import com.codewithaashu.task_manager.Payload.ApiResponse;
 import com.codewithaashu.task_manager.Payload.ApiResponseWithoutData;
@@ -23,7 +24,9 @@ import com.codewithaashu.task_manager.Payload.SubTaskDto;
 import com.codewithaashu.task_manager.Payload.TaskDto;
 import com.codewithaashu.task_manager.enums.Stage;
 import com.codewithaashu.task_manager.service.implementation.TaskServiceImpl;
+import com.codewithaashu.task_manager.utils.MiddlewareUtils;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController // to make this class to be controller class
@@ -32,10 +35,16 @@ public class TaskController {
     @Autowired
     private TaskServiceImpl taskServiceImpl;
 
+    @Autowired
+    private MiddlewareUtils middleware;
+
     @PostMapping("")
-    public ResponseEntity<ApiResponse<TaskDto>> createTaskController(@Valid @RequestBody TaskDto taskDto) {
+    public ResponseEntity<ApiResponse<TaskDto>> createTaskController(@Valid @RequestBody TaskDto taskDto,
+            HttpServletRequest request) {
+        // middleware performed
+        User loggedInUser = middleware.getLoggedInUser(request);
         // create task
-        TaskDto savedTaskDto = taskServiceImpl.createTask(taskDto);
+        TaskDto savedTaskDto = taskServiceImpl.createTask(taskDto, loggedInUser);
         return new ResponseEntity<>(new ApiResponse<TaskDto>(savedTaskDto, "Task created successfull", true),
                 HttpStatus.CREATED);
 
@@ -48,7 +57,7 @@ public class TaskController {
                 HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
+    @GetMapping("/trash/{id}")
     public ResponseEntity<ApiResponseWithoutData> trashTaskController(@PathVariable Long id) {
         taskServiceImpl.trashTask(id);
         return new ResponseEntity<>(new ApiResponseWithoutData("Task trashed successfully", true), HttpStatus.OK);

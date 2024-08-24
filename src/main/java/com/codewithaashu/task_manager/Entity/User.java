@@ -24,7 +24,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     @Id
@@ -43,7 +43,7 @@ public class User {
     private String password;
     private Boolean isAdmin;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "task", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
+    @JoinTable(name = "user_task", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
     private List<Task> tasks;
     private Boolean isActive;
 

@@ -53,7 +53,7 @@ public class Task {
     private Boolean isTrashed;
 
     @ManyToMany
-    @JoinTable(name = "task", joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    @JoinTable(name = "user_task", joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private List<User> team;
 
     // timestamp

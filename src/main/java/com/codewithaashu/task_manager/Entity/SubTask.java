@@ -14,7 +14,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "subTask")
+@Table(name = "subTasks")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SubTask {
     @Id
