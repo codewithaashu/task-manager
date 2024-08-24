@@ -1,17 +1,16 @@
 
 package com.codewithaashu.task_manager.controllers;
 
-import java.net.HttpCookie;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,20 +24,11 @@ import com.codewithaashu.task_manager.service.implementation.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 public class UserController {
 
     @Autowired
     private UserServiceImpl userServiceImpl;
-
-    // mapping the controller
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserDto>> registerUserController(@RequestBody UserDto userDto) {
-        // send to the service
-        UserDto savedUserDto = userServiceImpl.registerUser(userDto);
-        savedUserDto.setPassword(null);
-        return new ResponseEntity<>(new ApiResponse<UserDto>(savedUserDto, "Registered successfully", true),
-                HttpStatus.CREATED);
-    }
 
     @PatchMapping("/change-password")
     public ResponseEntity<ApiResponseWithoutData> changePasswordController(@RequestBody UserDto userDto) {
@@ -80,18 +70,6 @@ public class UserController {
         // send to service
         List<UserDto> userDtos = userServiceImpl.getTeamList();
         return new ResponseEntity<>(new ApiResponses<>(userDtos, "fetched successfully", true), HttpStatus.OK);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponseWithoutData> loginUserContoller(@RequestBody UserDto user) {
-
-        String result = userServiceImpl.loginUser(user.getEmail(), user.getPassword());
-        if (result.equals("FAILED")) {
-            return new ResponseEntity<>(new ApiResponseWithoutData("Invalid Credentials", false),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(new ApiResponseWithoutData("Login Successfull", true), HttpStatus.OK);
     }
 
 }
