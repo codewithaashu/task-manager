@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.codewithaashu.task_manager.Entity.Activites;
+import com.codewithaashu.task_manager.Entity.Notification;
 import com.codewithaashu.task_manager.Entity.SubTask;
 import com.codewithaashu.task_manager.Entity.Task;
 import com.codewithaashu.task_manager.Entity.User;
@@ -18,6 +19,7 @@ import com.codewithaashu.task_manager.Payload.TaskDto;
 import com.codewithaashu.task_manager.enums.Stage;
 import com.codewithaashu.task_manager.exceptions.ResourceNotFoundException;
 import com.codewithaashu.task_manager.repository.ActivitiesRepository;
+import com.codewithaashu.task_manager.repository.NotificationRepository;
 import com.codewithaashu.task_manager.repository.SubTaskRepository;
 import com.codewithaashu.task_manager.repository.TaskRepository;
 import com.codewithaashu.task_manager.repository.UserRepository;
@@ -40,12 +42,43 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private ActivitiesRepository activitiesRepository;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     @Override
     public TaskDto createTask(TaskDto taskDto) {
-        // change in entity
+        // create task
+        // change in entity form
         Task task = modelMapper.map(taskDto, Task.class);
+        // save in db
         Task savedTask = taskRepository.save(task);
+        // change in return form
         TaskDto saveTaskDto = modelMapper.map(savedTask, TaskDto.class);
+
+        // create notfication
+        Notification notification = new Notification();
+        // create notification text
+        String notifcationText = "New task has been assigned to you ";
+        if (task.getTeam().size() > 1) {
+            notifcationText += String.format("and %s others.", (task.getTeam().size() - 1));
+        }
+        notifcationText += String.format(
+                "The task priority is set a %s priority, so check and act accordingly. The task date is %s. Thank you!!!",
+                task.getPriority().toString(), task.getDate().toString());
+        notification.setText(notifcationText);
+        // get team
+        List<User> teams = task.getTeam();
+        List<User> notifyTeams = new ArrayList<>();
+        for (User team : teams) {
+            User notifyTeam = new User();
+            notifyTeam.setId(team.getId());
+            notifyTeams.add(notifyTeam);
+        }
+        notification.setTeam(notifyTeams);
+        notification.setTask(savedTask);
+        // save it
+        notificationRepository.save(notification);
+
         return saveTaskDto;
     }
 

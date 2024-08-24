@@ -2,6 +2,7 @@ package com.codewithaashu.task_manager.Entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,7 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -25,17 +27,20 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "team")
-    private List<User> team;
     private String text;
+    private String notiType;
+
+    @ManyToMany
+    @JoinTable(name = "notification_user", joinColumns = @JoinColumn(name = "notifi_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> team;
+
     @OneToOne
     @JoinColumn(name = "task")
     private Task task;
-    private String notiType;
-    @OneToMany
-    @JoinColumn(name = "isRead")
-    private List<User> isRead;
+
+    @ManyToMany
+    @JoinTable(name = "notification_userRead", joinColumns = @JoinColumn(name = "notifi_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> isRead;
 
     // timestamp
     @CreationTimestamp

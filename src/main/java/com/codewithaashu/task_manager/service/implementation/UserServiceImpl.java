@@ -5,6 +5,12 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+// import org.springframework.security.authentication.AuthenticationManager;
+// import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+// import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +18,8 @@ import com.codewithaashu.task_manager.Entity.User;
 import com.codewithaashu.task_manager.Payload.UserDto;
 import com.codewithaashu.task_manager.exceptions.ResourceNotFoundException;
 import com.codewithaashu.task_manager.repository.UserRepository;
+import com.codewithaashu.task_manager.security.JWTService;
+// import com.codewithaashu.task_manager.security.JWTService;
 import com.codewithaashu.task_manager.service.UserService;
 
 @Service
@@ -24,6 +32,12 @@ public class UserServiceImpl implements UserService {
     // for converting one class to another class
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTService jwtService;
 
     // for encryption the password
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
@@ -105,4 +119,16 @@ public class UserServiceImpl implements UserService {
         }).collect(Collectors.toList());
         return userDtos;
     }
+
+    @Override
+    public String loginUser(String email, String password) {
+        // get authentication by username and password
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(email);
+        }
+        return "FAILED";
+    }
+
 }

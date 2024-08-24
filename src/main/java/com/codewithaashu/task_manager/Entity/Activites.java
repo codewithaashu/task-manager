@@ -16,7 +16,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -33,12 +32,15 @@ public class Activites {
     private ActivityType type;
     private String activity;
     private String date;
-    @OneToOne
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User by;
+
     @ManyToOne
     @JoinColumn(name = "task_id")
     private Task task;
+
     // timestamps
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -1,6 +1,7 @@
 
 package com.codewithaashu.task_manager.controllers;
 
+import java.net.HttpCookie;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,4 +81,17 @@ public class UserController {
         List<UserDto> userDtos = userServiceImpl.getTeamList();
         return new ResponseEntity<>(new ApiResponses<>(userDtos, "fetched successfully", true), HttpStatus.OK);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponseWithoutData> loginUserContoller(@RequestBody UserDto user) {
+
+        String result = userServiceImpl.loginUser(user.getEmail(), user.getPassword());
+        if (result.equals("FAILED")) {
+            return new ResponseEntity<>(new ApiResponseWithoutData("Invalid Credentials", false),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(new ApiResponseWithoutData("Login Successfull", true), HttpStatus.OK);
+    }
+
 }

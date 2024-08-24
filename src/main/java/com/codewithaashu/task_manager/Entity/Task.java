@@ -1,7 +1,6 @@
 package com.codewithaashu.task_manager.Entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.codewithaashu.task_manager.enums.Priority;
 import com.codewithaashu.task_manager.enums.Stage;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.persistence.Column;
@@ -44,16 +42,19 @@ public class Task {
     private Priority priority;
     @Enumerated(EnumType.STRING)
     private Stage stage;
+
     @OneToMany(mappedBy = "task")
     private List<Activites> activites;
+
     @OneToMany(mappedBy = "task")
-    @JsonIdentityReference(alwaysAsId = true)
     private List<SubTask> subTasks;
+
     private List<String> assets;
     private Boolean isTrashed;
+
     @ManyToMany
     @JoinTable(name = "task", joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private List<User> team = new ArrayList<>();
+    private List<User> team;
 
     // timestamp
     @CreationTimestamp

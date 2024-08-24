@@ -19,4 +19,6 @@ public interface UserService {
     UserDto updateUser(UserDto userDto, Long id);
 
     List<UserDto> getTeamList();
+
+    String loginUser(String email, String password);
 }
