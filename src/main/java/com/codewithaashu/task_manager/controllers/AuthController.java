@@ -50,6 +50,7 @@ public class AuthController {
             cookie.setPath("/");
             // add cookie in response
             response.addCookie(cookie);
+
         }
         return new ResponseEntity<>(new ApiResponseWithoutData("Login Successfully", true), HttpStatus.OK);
     }

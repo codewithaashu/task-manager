@@ -12,6 +12,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+
 @ControllerAdvice // to make exception handler class
 public class GlobalExceptionHandler {
 
@@ -58,6 +61,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse<String>> handleBadCredentialException(BadCredentialsException exception) {
         return new ResponseEntity<>(new ErrorResponse<String>(exception.getMessage(), false), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponse<String>> handleExpiredJwtException(ExpiredJwtException exception) {
+        return new ResponseEntity<>(new ErrorResponse<String>("Token provided is expired", false),
+                HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorResponse<String>> handleJwtException(JwtException exception) {
+        return new ResponseEntity<>(new ErrorResponse<String>(exception.getMessage(), false),
+                HttpStatus.UNAUTHORIZED);
     }
 
 }
