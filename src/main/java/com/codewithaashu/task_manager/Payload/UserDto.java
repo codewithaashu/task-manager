@@ -22,6 +22,7 @@ public class UserDto {
     private String title;
     @NotBlank(message = "role is required field")
     private String role;
+    @NotBlank(message = "email is required field")
     @Email(message = "Invalid email.")
     private String email;
     @NotBlank(message = "password is required field")

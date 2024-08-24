@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codewithaashu.task_manager.Payload.ApiResponse;
 import com.codewithaashu.task_manager.Payload.ApiResponseWithoutData;
+import com.codewithaashu.task_manager.Payload.LoginUserRequest;
 import com.codewithaashu.task_manager.Payload.UserDto;
 import com.codewithaashu.task_manager.service.implementation.UserServiceImpl;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -25,7 +27,7 @@ public class AuthController {
 
     // mapping the controller
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserDto>> registerUserController(@RequestBody UserDto userDto) {
+    public ResponseEntity<ApiResponse<UserDto>> registerUserController(@Valid @RequestBody UserDto userDto) {
         // send to the service
         UserDto savedUserDto = userServiceImpl.registerUser(userDto);
         savedUserDto.setPassword(null);
@@ -34,23 +36,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseWithoutData> loginUserContoller(@RequestBody UserDto user,
+    public ResponseEntity<ApiResponseWithoutData> loginUserContoller(@Valid @RequestBody LoginUserRequest user,
             HttpServletResponse response) {
 
         String result = userServiceImpl.loginUser(user.getEmail(), user.getPassword());
-        if (result.equals("FAILED")) {
-            return new ResponseEntity<>(new ApiResponseWithoutData("Invalid Credentials", false),
-                    HttpStatus.BAD_REQUEST);
+        if (!result.equals("FAILED")) {
+            // set cookie
+            // create an object of cookie
+            Cookie cookie = new Cookie("token", result);
+            cookie.setMaxAge(7 * 24 * 60 * 60);
+            cookie.setSecure(true);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            // add cookie in response
+            response.addCookie(cookie);
         }
-        // set cookie
-        // create an object of cookie
-        Cookie cookie = new Cookie("token", result);
-        cookie.setMaxAge(120);
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        // add cookie in response
-        response.addCookie(cookie);
         return new ResponseEntity<>(new ApiResponseWithoutData("Login Successfully", true), HttpStatus.OK);
     }
 

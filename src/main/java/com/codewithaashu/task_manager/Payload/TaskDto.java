@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskDto {
-    @NotNull
+    @NotNull(message = "title is required field")
     private String title;
     private String date;
     @Enumerated(EnumType.STRING)

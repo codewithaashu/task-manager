@@ -24,6 +24,8 @@ import com.codewithaashu.task_manager.Payload.TaskDto;
 import com.codewithaashu.task_manager.enums.Stage;
 import com.codewithaashu.task_manager.service.implementation.TaskServiceImpl;
 
+import jakarta.validation.Valid;
+
 @RestController // to make this class to be controller class
 @RequestMapping("/api/v1/task") // to define the leading url
 public class TaskController {
@@ -31,7 +33,7 @@ public class TaskController {
     private TaskServiceImpl taskServiceImpl;
 
     @PostMapping("")
-    public ResponseEntity<ApiResponse<TaskDto>> createTaskController(@RequestBody TaskDto taskDto) {
+    public ResponseEntity<ApiResponse<TaskDto>> createTaskController(@Valid @RequestBody TaskDto taskDto) {
         // create task
         TaskDto savedTaskDto = taskServiceImpl.createTask(taskDto);
         return new ResponseEntity<>(new ApiResponse<TaskDto>(savedTaskDto, "Task created successfull", true),
