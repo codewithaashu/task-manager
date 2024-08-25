@@ -1,6 +1,7 @@
 package com.codewithaashu.task_manager.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.server.Cookie.SameSite;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,10 +45,12 @@ public class AuthController {
             // set cookie
             // create an object of cookie
             Cookie cookie = new Cookie("token", result);
-            cookie.setMaxAge(7 * 24 * 60 * 60);
-            cookie.setSecure(true);
-            cookie.setHttpOnly(true);
+            cookie.setMaxAge(3600);
+            cookie.setSecure(false);
+            cookie.setHttpOnly(false);
             cookie.setPath("/");
+            cookie.setDomain("localhost");
+            // cookie.setAttribute("SameSite", SameSite.LAX.toString());
             // add cookie in response
             response.addCookie(cookie);
 

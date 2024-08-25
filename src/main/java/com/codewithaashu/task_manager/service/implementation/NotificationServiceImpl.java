@@ -14,7 +14,6 @@ import com.codewithaashu.task_manager.Entity.User;
 import com.codewithaashu.task_manager.Payload.NotificationDto;
 import com.codewithaashu.task_manager.exceptions.ResourceNotFoundException;
 import com.codewithaashu.task_manager.repository.NotificationRepository;
-import com.codewithaashu.task_manager.repository.UserRepository;
 import com.codewithaashu.task_manager.service.NotificationService;
 
 @Service
@@ -23,14 +22,8 @@ public class NotificationServiceImpl implements NotificationService {
     private NotificationRepository notificationRepository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private UserRepository userRepository;
 
-    public List<NotificationDto> getUserNotifications(Long userId) {
-        // get user
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId.toString()));
-        // get user's all notifications
+    public List<NotificationDto> getUserNotifications(User user) {
         List<User> users = new ArrayList<>();
         users.add(user);
         List<Notification> notifications = notificationRepository.findByTeamIn(users);
@@ -46,13 +39,10 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void markNotificationRead(Long userId, Long id) {
+    public void markNotificationRead(User user, Long id) {
         // get the notification
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification", "id", id.toString()));
-        // get the user
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id.toString()));
         // add user in notificationReadUser list
         Set<User> notificationReadUser = notification.getIsRead();
         notificationReadUser.add(user);
@@ -62,10 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void markNotificationsRead(Long userId) {
-        // get the user
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId.toString()));
+    public void markNotificationsRead(User user) {
         List<User> users = new ArrayList<>();
         users.add(user);
         // get all notifications

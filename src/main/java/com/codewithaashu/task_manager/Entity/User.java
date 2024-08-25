@@ -37,7 +37,7 @@ public class User {
     private String title;
     @Column(nullable = false)
     private String role;
-    @Column(nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
     private String password;

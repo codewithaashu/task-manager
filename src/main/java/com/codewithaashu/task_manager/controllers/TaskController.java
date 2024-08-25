@@ -23,6 +23,7 @@ import com.codewithaashu.task_manager.Payload.ApiResponses;
 import com.codewithaashu.task_manager.Payload.SubTaskDto;
 import com.codewithaashu.task_manager.Payload.TaskDto;
 import com.codewithaashu.task_manager.enums.Stage;
+import com.codewithaashu.task_manager.repository.UserRepository;
 import com.codewithaashu.task_manager.service.implementation.TaskServiceImpl;
 import com.codewithaashu.task_manager.utils.MiddlewareUtils;
 
@@ -38,11 +39,15 @@ public class TaskController {
     @Autowired
     private MiddlewareUtils middleware;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping("")
     public ResponseEntity<ApiResponse<TaskDto>> createTaskController(@Valid @RequestBody TaskDto taskDto,
             HttpServletRequest request) {
         // middleware performed
-        User loggedInUser = middleware.getLoggedInUser(request);
+        // User loggedInUser = middleware.getLoggedInUser(request);
+        User loggedInUser = userRepository.findByEmail("admin@mts.com");
         // create task
         TaskDto savedTaskDto = taskServiceImpl.createTask(taskDto, loggedInUser);
         return new ResponseEntity<>(new ApiResponse<TaskDto>(savedTaskDto, "Task created successfull", true),
@@ -78,12 +83,14 @@ public class TaskController {
         return new ResponseEntity<>(new ApiResponseWithoutData("SubTask added successfully.", true), HttpStatus.OK);
     }
 
-    @PostMapping("/activities/{userId}/{taskId}")
+    @PostMapping("/activities/{taskId}")
     public ResponseEntity<ApiResponseWithoutData> postTaskActivityController(
-            @PathVariable(name = "userId", required = true) Long userId,
             @PathVariable(name = "taskId", required = true) Long taskId,
             @RequestBody ActivitiesDto activites) {
-        taskServiceImpl.postTaskActivity(taskId, userId, activites);
+        // middleware performed
+        // User loggedInUser = middleware.getLoggedInUser(request);
+        User loggedInUser = userRepository.findByEmail("admin@mts.com");
+        taskServiceImpl.postTaskActivity(loggedInUser, taskId, activites);
         return new ResponseEntity<>(new ApiResponseWithoutData("Activity posted successfully.", true), HttpStatus.OK);
     }
 

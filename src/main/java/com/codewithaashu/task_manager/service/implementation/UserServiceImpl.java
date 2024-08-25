@@ -100,8 +100,10 @@ public class UserServiceImpl implements UserService {
         // if user exist then set data of user with new user data
         user.setName(userDto.getName() == null ? user.getName() : userDto.getName());
         user.setTitle(userDto.getTitle() == null ? user.getTitle() : userDto.getTitle());
-        user.setIsAdmin(userDto.getIsAdmin() == null ? user.getIsAdmin() : userDto.getIsAdmin());
+        // user.setIsAdmin(userDto.getIsAdmin() == null ? user.getIsAdmin() :
+        // userDto.getIsAdmin());
         user.setRole(userDto.getRole() == null ? user.getRole() : userDto.getRole());
+        user.setEmail(userDto.getEmail() == null ? user.getEmail() : userDto.getEmail());
         // save in repository
         User updatedUser = userRepository.save(user);
         // change in modal form

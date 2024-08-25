@@ -11,6 +11,7 @@ import com.codewithaashu.task_manager.enums.Priority;
 import com.codewithaashu.task_manager.enums.Stage;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,10 +44,11 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private Stage stage;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
+
     private List<Activites> activites;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
     private List<SubTask> subTasks;
 
     private List<String> assets;

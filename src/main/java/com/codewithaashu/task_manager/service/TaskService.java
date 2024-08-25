@@ -19,7 +19,7 @@ public interface TaskService {
 
     void createSubTask(SubTaskDto subTask, Long id);
 
-    void postTaskActivity(Long taskId, Long userId, ActivitiesDto activites);
+    void postTaskActivity(User logginUser, Long taskId, ActivitiesDto activites);
 
     void deleteRestoreTask(String operation, Long id);
 

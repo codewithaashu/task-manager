@@ -23,7 +23,8 @@ public class TaskManagerApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(@SuppressWarnings("null") CorsRegistry reg) {
-				reg.addMapping("/**").allowedOrigins("http://localhost:3000").allowCredentials(true);
+				reg.addMapping("/**").allowedOrigins("http://localhost:3000").allowCredentials(true)
+						.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE");
 			}
 		};
 	}

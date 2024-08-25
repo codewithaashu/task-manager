@@ -23,7 +23,6 @@ import com.codewithaashu.task_manager.repository.ActivitiesRepository;
 import com.codewithaashu.task_manager.repository.NotificationRepository;
 import com.codewithaashu.task_manager.repository.SubTaskRepository;
 import com.codewithaashu.task_manager.repository.TaskRepository;
-import com.codewithaashu.task_manager.repository.UserRepository;
 import com.codewithaashu.task_manager.service.TaskService;
 
 @Service
@@ -36,9 +35,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private SubTaskRepository subTaskRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private ActivitiesRepository activitiesRepository;
@@ -124,7 +120,9 @@ public class TaskServiceImpl implements TaskService {
         task.setTitle(taskDto.getTitle() == null ? task.getTitle() : taskDto.getTitle());
         task.setDate(taskDto.getDate() == null ? task.getDate() : taskDto.getDate());
         task.setAssets(taskDto.getAssets() == null ? task.getAssets() : taskDto.getAssets());
-        // task.setTeam(taskDto.getTeam() == null ? task.getTeam() : taskDto.getTeam());
+        List<User> teamUser = taskDto.getTeam().stream().map(team -> modelMapper.map(team, User.class))
+                .collect(Collectors.toList());
+        task.setTeam(taskDto.getTeam() == null ? task.getTeam() : teamUser);
         task.setStage(taskDto.getStage() == null ? task.getStage() : taskDto.getStage());
         task.setPriority(taskDto.getPriority() == null ? task.getPriority() : taskDto.getPriority());
 
@@ -149,11 +147,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void postTaskActivity(Long taskId, Long userId, ActivitiesDto activitesDto) {
-        // find the user
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId.toString()));
-
+    public void postTaskActivity(User logginUser, Long taskId, ActivitiesDto activitesDto) {
         // find the task
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId.toString()));
@@ -161,7 +155,7 @@ public class TaskServiceImpl implements TaskService {
         // create a activities
         Activites activites = modelMapper.map(activitesDto, Activites.class);
         activites.setTask(task);
-        activites.setBy(user);
+        activites.setBy(logginUser);
         activitiesRepository.save(activites);
     }
 
@@ -208,6 +202,9 @@ public class TaskServiceImpl implements TaskService {
         duplicateTask.setPriority(task.getPriority());
         duplicateTask.setStage(task.getStage());
         duplicateTask.setIsTrashed(task.getIsTrashed());
+        List<User> teamUser = task.getTeam().stream().map(team -> modelMapper.map(team, User.class))
+                .collect(Collectors.toList());
+        duplicateTask.setTeam(teamUser);
         // save in repo
         Task savedTask = taskRepository.save(duplicateTask);
         return modelMapper.map(savedTask, TaskDto.class);
