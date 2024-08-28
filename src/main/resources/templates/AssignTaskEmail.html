@@ -1,0 +1,94 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Assignment Notification</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border: 1px solid #dddddd;
+        border-radius: 8px;
+      }
+      .header {
+        text-align: center;
+        padding-bottom: 20px;
+      }
+      .header h1 {
+        margin: 0;
+        color: #333333;
+      }
+      .content {
+        font-size: 16px;
+        color: #333333;
+      }
+      .content p {
+        margin: 0 0 10px;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #ffffff;
+        background-color: #007bff;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 10px;
+      }
+      .footer {
+        text-align: center;
+        padding-top: 20px;
+        font-size: 14px;
+        color: #777777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Task Assignment Notification</h1>
+      </div>
+      <div class="content">
+        <p th:text="'Dear '+ ${name}+','">Dear user,</p>
+        <p>I hope this message finds you well.</p>
+        <p>You have been assigned a new task. Here are the details:</p>
+        <div style="display: flex">
+          <strong>Task Name:</strong>
+          <p th:text="${taskName}">task</p>
+        </div>
+        <div style="display: flex">
+          <strong>Description:</strong>
+          <p>[Brief Description of the Task]</p>
+        </div>
+        <div style="display: flex">
+          <strong>Due Date:</strong>
+          <p th:text="${date}">Date</p>
+        </div>
+        <div style="display: flex">
+          <strong>Priority:</strong>
+          <p th:text="${priority}">priority</p>
+        </div>
+        <p>
+          Please review the task and complete it by the specified due date. If
+          you have any questions or need further information, feel free to reach
+          out.
+        </p>
+        <p>To view the task, please click the button below:</p>
+        <a th:href="${link}" href="www.google.com" class="button">View Task</a>
+      </div>
+      <div class="footer">
+        <p>Thank you for your attention to this matter.</p>
+        <p>Best regards,<br />TaskMe</p>
+      </div>
+    </div>
+  </body>
+</html>

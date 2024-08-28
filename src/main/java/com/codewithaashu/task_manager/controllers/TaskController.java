@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,6 +26,7 @@ import com.codewithaashu.task_manager.repository.UserRepository;
 import com.codewithaashu.task_manager.service.implementation.TaskServiceImpl;
 import com.codewithaashu.task_manager.utils.MiddlewareUtils;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -56,7 +56,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<TaskDto>> getTaskController(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<TaskDto>> getTaskController(@PathVariable Long id) throws MessagingException {
         TaskDto taskDto = taskServiceImpl.getTask(id);
         return new ResponseEntity<>(new ApiResponse<TaskDto>(taskDto, "Fetched successfully", true),
                 HttpStatus.OK);

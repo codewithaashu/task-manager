@@ -8,10 +8,12 @@ import com.codewithaashu.task_manager.Payload.SubTaskDto;
 import com.codewithaashu.task_manager.Payload.TaskDto;
 import com.codewithaashu.task_manager.enums.Stage;
 
+import jakarta.mail.MessagingException;
+
 public interface TaskService {
     TaskDto createTask(TaskDto taskDto, User logginUser);
 
-    TaskDto getTask(Long id);
+    TaskDto getTask(Long id) throws MessagingException;
 
     void trashTask(Long id);
 

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import com.codewithaashu.task_manager.Entity.Activites;
 import com.codewithaashu.task_manager.Entity.Notification;
@@ -24,6 +25,9 @@ import com.codewithaashu.task_manager.repository.NotificationRepository;
 import com.codewithaashu.task_manager.repository.SubTaskRepository;
 import com.codewithaashu.task_manager.repository.TaskRepository;
 import com.codewithaashu.task_manager.service.TaskService;
+import com.codewithaashu.task_manager.utils.SendEmailService;
+
+import jakarta.mail.MessagingException;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -41,6 +45,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private SendEmailService sendEmailService;
 
     @Override
     public TaskDto createTask(TaskDto taskDto, User logginUser) {
@@ -90,10 +97,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto getTask(Long id) {
+    public TaskDto getTask(Long id) throws MessagingException {
         // find the task
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task", "id", id.toString()));
+            Context context = new Context();
+            context.setVariable("name", "Ashish Ranjan");
+            context.setVariable("taskName", "Web Developer Task");
+            context.setVariable("date", "16-08-2024");
+            context.setVariable("priority", "Medium");
+            context.setVariable("priority", "Medium");
+            context.setVariable("link", "https://studygyaan.com/spring-boot/send-email-via-smtp-spring-boot");
+        sendEmailService.sendEmail("ashishrajk123@gmail.com", "ashya2616@gmail.com", "testing","AssignTaskEmail",context);
         // we get task, so we convert into return form
         return modelMapper.map(task, TaskDto.class);
     }
@@ -142,6 +157,7 @@ public class TaskServiceImpl implements TaskService {
         SubTask subTask = modelMapper.map(subTaskDto, SubTask.class);
         // set the task in it
         subTask.setTask(task);
+
         // saved it
         subTaskRepository.save(subTask);
     }
